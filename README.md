@@ -1,194 +1,248 @@
-🛠️ Mini E-Commerce API
-This comprehensive documentation covers both the backend API and frontend application for a basic e-commerce system with authentication, product management, and order handling.
 
-📦 Backend API Setup Instructions
-Run the project with:
-bashyarn install
+# 🛠️ Mini E-Commerce Documentation
+
+This project is a simplified e-commerce system built with NestJS (Backend) and React + Redux Toolkit (Frontend), supporting both admin and customer roles.
+
+---
+
+## 📦 Backend API Documentation (NestJS + PostgreSQL)
+
+### 🧰 Setup Instructions
+
+Run the backend locally:
+
+```bash
+yarn install
 yarn start:dev
+```
+
 To seed an initial admin user:
-bashyarn seed:admin
 
-📁 Auth Endpoints
-🔐 Register
+```bash
+yarn seed:admin
+```
 
-Endpoint: POST /auth/register
-Body:
+---
 
-json{
-  "email": "majd@example.com",
-  "password": "password123",
-  "name": "Majd"
-}
+### 📁 Auth
 
-Response: 201 Created
+#### 🔐 Register
 
-🔑 Login
+- **Endpoint**: `POST /auth/register`
+- **Body**:
+  ```json
+  {
+    "email": "majd@example.com",
+    "password": "password123",
+    "name": "Majd"
+  }
+  ```
+- **Response**: `201 Created`
 
-Endpoint: POST /auth/login
-Body:
+---
 
-json{
-  "email": "majd@example.com",
-  "password": "password123"
-}
+#### 🔑 Login
 
-Response: Returns a JWT token
+- **Endpoint**: `POST /auth/login`
+- **Body**:
+  ```json
+  {
+    "email": "majd@example.com",
+    "password": "password123"
+  }
+  ```
+- **Response**: Returns a JWT token
 
+---
 
-👤 Users Endpoints
-🙋‍♂️ Get Current User
+### 👤 Users
 
-Endpoint: GET /users/me
-Headers:
+#### 🙋‍♂️ Get Current User
 
-httpAuthorization: Bearer <JWT_TOKEN>
+- **Endpoint**: `GET /users/me`
+- **Headers**:
+  ```http
+  Authorization: Bearer <JWT_TOKEN>
+  ```
+- **Response**:
+  ```json
+  {
+    "id": "uuid",
+    "email": "majd@example.com",
+    "name": "Majd",
+    "role": "ADMIN"
+  }
+  ```
 
-Response:
+---
 
-json{
-  "id": "uuid",
-  "email": "majd@example.com",
-  "name": "Majd",
-  "role": "ADMIN"
-}
+### 🛒 Products
 
-🛒 Products Endpoints
-➕ Create Product (Admin Only)
+#### ➕ Create Product (Admin Only)
 
-Endpoint: POST /products
-Headers: Bearer token (admin required)
-Body:
+- **Endpoint**: `POST /products`
+- **Headers**: Bearer token (admin required)
+- **Body**:
+  ```json
+  {
+    "name": "PlayStation 5",
+    "price": 499.99,
+    "stock": 15
+  }
+  ```
 
-json{
-  "name": "PlayStation 5",
-  "price": 499.99,
-  "stock": 15
-}
-📃 Get All Products
+---
 
-Endpoint: GET /products
-Response: List of all available products
+#### 📃 Get All Products
 
-✏️ Update Product (Admin Only)
+- **Endpoint**: `GET /products`
+- **Response**: List of all available products
 
-Endpoint: PUT /products/:id
-Headers: Bearer token (admin required)
-Body:
+---
 
-json{
-  "name": "Updated Product",
-  "price": 499.99,
-  "stock": 20
-}
-🗑️ Delete Product (Admin Only)
+#### ✏️ Update Product (Admin Only)
 
-Endpoint: DELETE /products/:id
-Headers: Bearer token (admin required)
+- **Endpoint**: `PUT /products/:id`
+- **Headers**: Bearer token (admin required)
+- **Body**:
+  ```json
+  {
+    "name": "Updated Product",
+    "price": 499.99,
+    "stock": 20
+  }
+  ```
 
+---
 
-📦 Orders Endpoints
-📝 Create Order
+#### 🗑️ Delete Product (Admin Only)
 
-Endpoint: POST /orders
-Headers: Bearer token (customer required)
-Body:
+- **Endpoint**: `DELETE /products/:id`
+- **Headers**: Bearer token (admin required)
 
-json{
-  "items": [
-    {
-      "productId": "uuid-of-product",
-      "quantity": 2
-    }
-  ]
-}
-📑 Get Orders
+---
 
-Endpoint: GET /orders
-Headers: Bearer token
-Behavior:
+### 📦 Orders
 
-If ADMIN: returns all orders
-If CUSTOMER: returns only their own orders
+#### 📝 Create Order
 
+- **Endpoint**: `POST /orders`
+- **Headers**: Bearer token (customer required)
+- **Body**:
+  ```json
+  {
+    "items": [
+      {
+        "productId": "uuid-of-product",
+        "quantity": 2
+      }
+    ]
+  }
+  ```
 
+---
 
+#### 📑 Get Orders
 
-🖥️ Frontend Admin/Customer Panel
-Overview
+- **Endpoint**: `GET /orders`
+- **Headers**: Bearer token
+- **Behavior**:
+  - If **ADMIN**: returns all orders
+  - If **CUSTOMER**: returns only their own orders
+
+---
+
+## 🖥️ Frontend Admin/Customer Panel
+
+### 🔍 Overview
+
 This React + Redux Toolkit application provides a simple e-commerce-like interface with:
 
-Product management (admin only)
-Order viewing (admin only)
-Product browsing and purchasing (customers)
-Auth-based routing logic
+- Product management (admin only)
+- Order viewing (admin only)
+- Product browsing and purchasing (customers)
+- Auth-based routing logic
 
+---
 
-Features
-🔐 Authentication
+### 🔐 Authentication
 
-Users can register and login
-After login, the token is stored in localStorage and used for authenticated requests
-Based on the user role:
+- Users can register and login.
+- After login, the token is stored in `localStorage` and used for authenticated requests.
+- Based on the user role:
+  - **Admins** are redirected to the admin dashboard.
+  - **Customers** are redirected to the shop page.
 
-Admins are redirected to the admin dashboard
-Customers are redirected to the shop page
+> **Note**: Routing redirection based on roles is implemented.
 
+---
 
+### 📦 Orders (Admin)
 
+- Admins can view all orders via `/orders`.
+- Each order includes:
+  - Order ID
+  - Customer email
+  - Date
+  - List of purchased products and quantities
 
-Note: Routing redirection based on roles is implemented.
-
-
-📦 Orders (Admin)
-
-Admins can view all orders via /orders
-Each order includes:
-
-Order ID
-Customer email
-Date
-List of purchased products and quantities
-
-
-
-The system uses the following endpoint:
-httpGET /orders
+**Endpoint**:
+```http
+GET /orders
 Authorization: Bearer <token>
+```
 
-🛍️ Product Management (Admin)
+---
+
+### 🛍️ Product Management (Admin)
+
 Admins can:
 
-Add new products
-Update product details
-Delete products
+- Add new products
+- Update product details
+- Delete products
 
 Uses Redux for fetching and managing product state.
 
-🧾 Shopping Cart (Customer)
+---
+
+### 🧾 Shopping Cart (Customer)
+
 Customers can:
 
-Add products to the cart
-View cart contents and total
-Place an order
+- Add products to the cart
+- View cart contents and total
+- Place an order
 
-Order creation sends:
-json{
+**Order creation request**:
+
+```json
+{
   "items": [
-    {
-      "productId": "<id>",
-      "quantity": <number>
-    }
+    { "productId": "<id>", "quantity": <number> }
   ]
 }
-To:
-httpPOST /orders
+```
 
-🔔 Known Limitations
-❗ Logout functionality is not implemented yet
-❗ Styling is minimal or missing due to tight time constraints
+**Endpoint**:
 
-🧪 Future Improvements
+```http
+POST /orders
+```
 
-Add a LogoutButton component that clears auth state and redirects to login
-Style the UI using TailwindCSS or Material UI
-Add role-protected routes via a route guard HOC or component
+---
+
+## ⚠️ Known Limitations
+
+- ❗ Logout functionality is not implemented yet.
+- ❗ Styling is minimal or missing due to tight time constraints.
+
+---
+
+## 🚀 Future Improvements
+
+- Add a `LogoutButton` component that clears auth state and redirects to login.
+- Style the UI using TailwindCSS or Material UI.
+- Add role-protected routes via a route guard HOC or component.
+
+---
