@@ -1,33 +1,25 @@
+# 🛠️ Mini E-Commerce API Documentation
 
-# 🛠️ Mini E-Commerce Documentation
+This API supports a basic e-commerce backend with authentication, product management, and order handling.
 
-This project is a simplified e-commerce system built with NestJS (Backend) and React + Redux Toolkit (Frontend), supporting both admin and customer roles.
+## 📦 Setup Instructions
 
----
-
-## 📦 Backend API Documentation (NestJS + PostgreSQL)
-
-### 🧰 Setup Instructions
-
-Run the backend locally:
-
+Run the project with:
 ```bash
 yarn install
 yarn start:dev
 ```
 
 To seed an initial admin user:
-
 ```bash
 yarn seed:admin
 ```
 
 ---
 
-### 📁 Auth
+## 📁 Auth
 
-#### 🔐 Register
-
+### 🔐 Register
 - **Endpoint**: `POST /auth/register`
 - **Body**:
   ```json
@@ -41,8 +33,7 @@ yarn seed:admin
 
 ---
 
-#### 🔑 Login
-
+### 🔑 Login
 - **Endpoint**: `POST /auth/login`
 - **Body**:
   ```json
@@ -55,10 +46,9 @@ yarn seed:admin
 
 ---
 
-### 👤 Users
+## 👤 Users
 
-#### 🙋‍♂️ Get Current User
-
+### 🙋‍♂️ Get Current User
 - **Endpoint**: `GET /users/me`
 - **Headers**:
   ```http
@@ -76,10 +66,9 @@ yarn seed:admin
 
 ---
 
-### 🛒 Products
+## 🛒 Products
 
-#### ➕ Create Product (Admin Only)
-
+### ➕ Create Product (Admin Only)
 - **Endpoint**: `POST /products`
 - **Headers**: Bearer token (admin required)
 - **Body**:
@@ -91,18 +80,24 @@ yarn seed:admin
   }
   ```
 
----
-
-#### 📃 Get All Products
-
+### 📃 Get All Products
 - **Endpoint**: `GET /products`
 - **Response**: List of all available products
 
----
 
-#### ✏️ Update Product (Admin Only)
-
-- **Endpoint**: `PUT /products/:id`
+### ✏️ Update Product (Admin Only)
+- **Endpoint**: `Put /products/:id`
+- **Headers**: Bearer token (admin required)
+- **Body**:
+  ```json
+  {
+    "name": "Updated Product",
+    "price": 499.99,
+    "stock": 20
+  }
+  ```
+### ✏️ Delete Product (Admin Only)
+- **Endpoint**: `Delete /products/:id`
 - **Headers**: Bearer token (admin required)
 - **Body**:
   ```json
@@ -113,19 +108,12 @@ yarn seed:admin
   }
   ```
 
----
-
-#### 🗑️ Delete Product (Admin Only)
-
-- **Endpoint**: `DELETE /products/:id`
-- **Headers**: Bearer token (admin required)
 
 ---
 
-### 📦 Orders
+## 📦 Orders
 
-#### 📝 Create Order
-
+### 📝 Create Order
 - **Endpoint**: `POST /orders`
 - **Headers**: Bearer token (customer required)
 - **Body**:
@@ -140,109 +128,9 @@ yarn seed:admin
   }
   ```
 
----
-
-#### 📑 Get Orders
-
+### 📑 Get Orders
 - **Endpoint**: `GET /orders`
 - **Headers**: Bearer token
 - **Behavior**:
   - If **ADMIN**: returns all orders
   - If **CUSTOMER**: returns only their own orders
-
----
-
-## 🖥️ Frontend Admin/Customer Panel
-
-### 🔍 Overview
-
-This React + Redux Toolkit application provides a simple e-commerce-like interface with:
-
-- Product management (admin only)
-- Order viewing (admin only)
-- Product browsing and purchasing (customers)
-- Auth-based routing logic
-
----
-
-### 🔐 Authentication
-
-- Users can register and login.
-- After login, the token is stored in `localStorage` and used for authenticated requests.
-- Based on the user role:
-  - **Admins** are redirected to the admin dashboard.
-  - **Customers** are redirected to the shop page.
-
-> **Note**: Routing redirection based on roles is implemented.
-
----
-
-### 📦 Orders (Admin)
-
-- Admins can view all orders via `/orders`.
-- Each order includes:
-  - Order ID
-  - Customer email
-  - Date
-  - List of purchased products and quantities
-
-**Endpoint**:
-```http
-GET /orders
-Authorization: Bearer <token>
-```
-
----
-
-### 🛍️ Product Management (Admin)
-
-Admins can:
-
-- Add new products
-- Update product details
-- Delete products
-
-Uses Redux for fetching and managing product state.
-
----
-
-### 🧾 Shopping Cart (Customer)
-
-Customers can:
-
-- Add products to the cart
-- View cart contents and total
-- Place an order
-
-**Order creation request**:
-
-```json
-{
-  "items": [
-    { "productId": "<id>", "quantity": <number> }
-  ]
-}
-```
-
-**Endpoint**:
-
-```http
-POST /orders
-```
-
----
-
-## ⚠️ Known Limitations
-
-- ❗ Logout functionality is not implemented yet.
-- ❗ Styling is minimal or missing due to tight time constraints.
-
----
-
-## 🚀 Future Improvements
-
-- Add a `LogoutButton` component that clears auth state and redirects to login.
-- Style the UI using TailwindCSS or Material UI.
-- Add role-protected routes via a route guard HOC or component.
-
----
