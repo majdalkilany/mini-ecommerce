@@ -1,7 +1,5 @@
-import { ConflictException, Injectable } from '@nestjs/common';
+import { ConflictException, Injectable, NotFoundException } from '@nestjs/common';
 import { UserRepository } from '../repositories';
-import { UpdateResult } from 'typeorm';
-import { UpdateUserDto } from '../dtos/requests';
 import { User } from '../entities';
 import * as bcrypt from 'bcrypt';
 
@@ -21,5 +19,13 @@ export class UsersService {
 
     const user: User = { name, email, password: hashedPassword } as User;
     return this.userRepo.createOne(user);
+  }
+
+  async getById(id: string): Promise<User> {
+    const user = await this.userRepo.findById(id);
+    if (!user) {
+      throw new NotFoundException('User not found');
+    }
+    return user;
   }
 }

@@ -17,4 +17,8 @@ export class UserRepository extends Repository<User> {
     const user = this.create(data);
     return this.save(user);
   }
+
+  async findById(id: string): Promise<User | null> {
+    return this.findOneBy({ id });
+  }
 }
