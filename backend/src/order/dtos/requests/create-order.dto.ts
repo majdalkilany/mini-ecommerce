@@ -12,10 +12,6 @@ class OrderItemInput {
 }
 
 export class CreateOrderDto {
-  @IsUUID('4', { message: 'Product ID must be a valid UUID.' })
-  @IsNotEmpty({ message: 'User ID is required.' })
-  userId!: string;
-
   @IsArray({ message: 'Items must be an array.' })
   @ValidateNested({ each: true })
   @Type(() => OrderItemInput)

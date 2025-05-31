@@ -1,4 +1,3 @@
-// src/users/repositories/user.repository.ts
 import { Injectable } from '@nestjs/common';
 import { DataSource, DeepPartial, Repository } from 'typeorm';
 import { User } from '../entities/user.entity';

@@ -1,4 +1,3 @@
-// src/auth/strategies/jwt.strategy.ts
 import { Injectable } from '@nestjs/common';
 import { PassportStrategy } from '@nestjs/passport';
 import { ExtractJwt, Strategy } from 'passport-jwt';
@@ -19,8 +18,7 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
     });
   }
 
-  // eslint-disable-next-line @typescript-eslint/require-await
-  async validate(payload: JwtPayload) {
-    return { userId: payload.sub, email: payload.email };
+  validate(payload: JwtPayload) {
+    return payload;
   }
 }

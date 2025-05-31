@@ -1,4 +1,3 @@
-// src/order/repositories/order.repository.ts
 import { Injectable } from '@nestjs/common';
 import { DataSource, Repository } from 'typeorm';
 import { Order } from '../entities/order.entity';
@@ -27,6 +26,21 @@ export class OrderRepository {
     return this.repo.findOne({
       where: { id },
       relations: ['items', 'user'],
+    });
+  }
+
+  async findAllWithItemsAndProducts(): Promise<Order[]> {
+    return this.repo.find({
+      relations: ['user', 'items', 'items.product'],
+      order: { createdAt: 'DESC' },
+    });
+  }
+
+  async findByUserId(userId: string): Promise<Order[]> {
+    return this.repo.find({
+      where: { user: { id: userId } },
+      relations: ['items', 'items.product', 'user'],
+      order: { createdAt: 'DESC' },
     });
   }
 }

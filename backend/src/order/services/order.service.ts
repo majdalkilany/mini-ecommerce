@@ -5,6 +5,7 @@ import { Order } from '../entities';
 import { CreateOrderDto } from '../dtos/requests';
 import { OrderStatus } from '../enums/order-status.enum';
 import { UsersService } from '~/users/services';
+import { UserRole } from '~/users/enums';
 
 @Injectable()
 export class OrderService {
@@ -15,8 +16,8 @@ export class OrderService {
     private readonly usersService: UsersService,
   ) {}
 
-  async createOrder(dto: CreateOrderDto): Promise<Order> {
-    const user = await this.usersService.getById(dto.userId);
+  async createOrder(userId: string, dto: CreateOrderDto): Promise<Order> {
+    const user = await this.usersService.getById(userId);
     if (!user) throw new NotFoundException('User not found');
 
     const order = this.orderRepo.createOne({
@@ -49,7 +50,6 @@ export class OrderService {
 
     const savedItems = await this.orderItemRepo.saveMany(orderItems);
 
-    // Update totalAmount and attach items
     savedOrder.totalAmount = total;
     savedOrder.items = savedItems;
 
@@ -64,5 +64,16 @@ export class OrderService {
     const order = await this.orderRepo.findById(id);
     if (!order) throw new NotFoundException('Order not found');
     return order;
+  }
+
+  async getOrders(userId: string, role: UserRole): Promise<Order[]> {
+    if (role === UserRole.ADMIN) {
+      console.log(role);
+      return this.orderRepo.findAllWithItemsAndProducts();
+    } else {
+      console.log('hoooooo')
+      const data = await this.orderRepo.findByUserId(userId);
+      return data;
+    }
   }
 }

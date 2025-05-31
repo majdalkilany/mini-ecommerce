@@ -1,4 +1,3 @@
-// src/order/repositories/order-item.repository.ts
 import { Injectable } from '@nestjs/common';
 import { DataSource, Repository } from 'typeorm';
 import { OrderItem } from '../entities/order-item.entity';

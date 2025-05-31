@@ -1,26 +1,30 @@
-// src/order/controllers/order.controller.ts
-import { Body, Controller, Get, HttpCode, HttpStatus, Post } from '@nestjs/common';
+import { Body, Controller, Get, Post, Req, UseGuards } from '@nestjs/common';
+import { Request } from 'express';
 import { OrderService } from '../services';
 import { CreateOrderDto } from '../dtos/requests';
 import { OrderResponseDto } from '../dtos/responses';
-import { Order } from '../entities';
+import { JwtPayload } from '~/auth/interfaces';
+import { AuthGuard } from '@nestjs/passport';
 
 @Controller('orders')
 export class OrderController {
   constructor(private readonly orderService: OrderService) {}
 
+  @UseGuards(AuthGuard('jwt'))
   @Post()
-  @HttpCode(HttpStatus.CREATED)
-  async create(@Body() dto: CreateOrderDto): Promise<OrderResponseDto> {
-    const order = await this.orderService.createOrder(dto);
+  async create(@Body() dto: CreateOrderDto, @Req() req: Request): Promise<OrderResponseDto> {
+    const { sub } = req.user as JwtPayload;
+    console.log(sub);
+    const order = await this.orderService.createOrder(sub, dto);
     return new OrderResponseDto(order);
   }
 
   @Get()
-  @HttpCode(HttpStatus.OK)
-  async findAll(): Promise<OrderResponseDto[]> {
-    const orders = await this.orderService.findAll();
-    return orders.map((order: Order) => new OrderResponseDto(order));
+  async getOrders(@Req() req: Request): Promise<OrderResponseDto[]> {
+    const { sub, role } = req.user as JwtPayload;
+    console.log(sub, role);
+    console.log(role);
+    const orders = await this.orderService.getOrders(sub, role);
+    return orders.map((order) => new OrderResponseDto(order));
   }
-
 }

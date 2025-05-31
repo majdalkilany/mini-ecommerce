@@ -15,22 +15,28 @@ export class ProductRepository {
     return this.repo.save(product);
   }
 
-  findAll() {
-    return this.repo.find();
+  async findAll(): Promise<Product[]> {
+    return this.repo.find({
+      where: { isDeleted: false },
+    });
   }
 
-  async getById(id: string): Promise<Product> {
-    return this.repo.findOneByOrFail({ id });
+  async getById(id: string): Promise<Product | null> {
+    return this.repo.findOne({
+      where: { id, isDeleted: false },
+    });
   }
 
   async updateProduct(id: string, dto: UpdateProductDto): Promise<Product> {
     const product = await this.getById(id);
+    if (!product) {
+      throw new Error(`Product with id ${id} not found`);
+    }
     Object.assign(product, dto);
     return this.repo.save(product);
   }
 
   async deleteProduct(id: string): Promise<void> {
-    const product = await this.getById(id);
-    await this.repo.remove(product);
+    await this.repo.update(id, { isDeleted: true });
   }
 }

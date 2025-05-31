@@ -1,4 +1,3 @@
-// Folder: src/users/dto/user.dto.ts
 import { ApiPropertyOptional } from '@nestjs/swagger';
 import { IsEmail, IsEnum, IsOptional, IsString, MinLength, Length } from 'class-validator';
 import { UserRole } from '../../enums';

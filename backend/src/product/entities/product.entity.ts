@@ -15,6 +15,9 @@ export class Product {
   @Column('int')
   stock!: number;
 
+  @Column({ default: false })
+  isDeleted!: boolean;
+
   @OneToMany(() => OrderItem, (item: OrderItem) => item.product)
   orderItems!: OrderItem[];
 }

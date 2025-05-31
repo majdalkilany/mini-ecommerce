@@ -1,4 +1,3 @@
-// src/product/services/product.service.ts
 import { Injectable } from '@nestjs/common';
 import { ProductRepository } from '../repositories';
 import { CreateProductDto, UpdateProductDto } from '../dtos/requests';
@@ -17,7 +16,11 @@ export class ProductService {
   }
 
   async getProductById(id: string): Promise<Product> {
-    return this.productRepository.getById(id);
+    const product = await this.productRepository.getById(id);
+    if (!product) {
+      throw new Error(`Product with id ${id} not found`);
+    }
+    return product;
   }
 
   async updateProduct(id: string, dto: UpdateProductDto): Promise<Product> {
